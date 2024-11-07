@@ -4,7 +4,13 @@ document.addEventListener('DOMContentLoaded', function() {
         initialView: 'dayGridMonth',
         editable: true,
         selectable: true,
-        events: '/events',  // GET request to load events
+        
+        events: '/events', // Load events once
+
+        eventSourceSuccess: function(content, xhr) {
+            
+            return content; 
+        },
 
         dateClick: function(info) {
             let title = prompt('Enter Event Title:');
@@ -23,11 +29,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify(event)
                 }).then(response => response.json())
                   .then(data => {
-                      calendar.addEvent(data);
+                      calendar.refetchEvents();  // Force re-fetch of events
                       alert('Event added!');
                   });
             }
         },
+        
+
         eventClick: function(info) {
             if (confirm('Are you sure you want to delete this event?')) {
                 fetch(`/events/${info.event.id}`, {
@@ -40,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         },
+
         eventDrop: function(info) {
             let updatedEvent = {
                 id: info.event.id,
@@ -60,5 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
               });
         }
     });
+
     calendar.render();
 });
