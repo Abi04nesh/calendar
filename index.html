@@ -13,5 +13,57 @@
 
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
     <script src="{{ url_for('static', filename='js/calendar.js') }}"></script>
+
+    <style>
+        /* Center the calendar */
+#calendar {
+    max-width: 90%;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+
+/* Make the event titles more readable */
+.fc-event-title {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Customize event colors */
+.fc-event {
+    background-color: #5e72e4;  /* Primary color */
+    border-color: #5e72e4;
+    color: white;
+}
+
+/* Hover effect for events */
+.fc-event:hover {
+    background-color: #4b59d1;
+    border-color: #4b59d1;
+    cursor: pointer;
+}
+
+/* Today highlight */
+.fc-today {
+    background-color: #f3f6f9;
+}
+
+/* Adjust month view alignment */
+.fc-daygrid-day-number {
+    font-size: 16px;
+    color: #333;
+}
+
+/* Calendar navigation arrows */
+.fc-prev-button, .fc-next-button {
+    background-color: #5e72e4;
+    color: white;
+    border: none;
+}
+
+.fc-prev-button:hover, .fc-next-button:hover {
+    background-color: #4b59d1;
+}
+
+    </style>
 </body>
 </html>
