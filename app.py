@@ -6,7 +6,6 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-# Initialize the database
 with app.app_context():
     db.create_all()
 
@@ -22,6 +21,11 @@ def get_events():
 @app.route('/events', methods=['POST'])
 def add_event():
     data = request.json
+    # Check if the event already exists (same start time and title)
+    existing_event = Event.query.filter_by(start=data['start'], title=data['title']).first()
+    if existing_event:
+        return jsonify({'message': 'Event already exists'}), 400  # Return an error if duplicate
+
     new_event = Event(
         title=data['title'],
         start=data['start'],
@@ -32,6 +36,7 @@ def add_event():
     db.session.commit()
     return jsonify(new_event.to_dict()), 201
 
+
 @app.route('/events/<int:event_id>', methods=['DELETE'])
 def delete_event(event_id):
     event = Event.query.get(event_id)
@@ -41,5 +46,15 @@ def delete_event(event_id):
         return jsonify({'message': 'Event deleted'}), 200
     return jsonify({'message': 'Event not found'}), 404
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/events/<int:event_id>', methods=['PUT'])
+def update_event(event_id):
+    event = Event.query.get(event_id)
+    if event:
+        data = request.json
+        event.title = data['title']
+        event.start = data['start']
+        event.end = data['end']
+        event.description = data.get('description', '')
+        db.session.commit()
+        return jsonify(event.to_dict())
+    return jsonify({'message': 'Event not found'}), 404
